@@ -22,12 +22,15 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon ./source/index.js"
+    "dev": "vercel dev",
+    "start": "node server.js",
+    "migrate": "knex --knexfile knexfile.js migrate:latest"
   },
   "dependencies": {
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "knex": "^3.1.0",
+    "serverless-http": "^4.0.0",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
