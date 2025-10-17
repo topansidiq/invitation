@@ -24,7 +24,7 @@
   "scripts": {
     "dev": "vercel dev",
     "start": "node server.js",
-    "migrate": "knex --knexfile knexfile.js migrate:latest"
+    "migrate": "npx knex --knexfile knexfile.js migrate:latest"
   },
   "dependencies": {
     "dotenv": "^17.2.3",

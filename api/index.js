@@ -3,16 +3,16 @@ import ServerlessHttp from "serverless-http";
 import path from "path";
 import { fileURLToPath } from "url";
 import config from '../knexfile.js';
-import knexConstructor from "knex"; // Diubah namanya untuk menghindari konflik
+import knexConstructor from "knex";
 
-const knexConfig = config.development;
+const environment = process.env.NODE_ENV || 'development';
+const knexConfig = config[environment];
 // 🟢 PERBAIKAN KNEX: Objek koneksi disimpan dalam variabel 'db'
 const db = knexConstructor(knexConfig);
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 const app = express();
+
 app.use(express.json());
 
 // 🔹 Serve folder 'public' sebagai static
