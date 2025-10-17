@@ -30,21 +30,23 @@ export function getPool() {
 
         // SSL Configuration
         ssl: isProduction ? {
-            rejectUnauthorized: false // Diperlukan untuk Neon, Supabase, dll
+            rejectUnauthorized: false
         } : false,
 
         // Serverless optimization settings
         max: 1, // PENTING: Minimal pool size untuk serverless (1 connection per instance)
-        min: 0, // Tidak perlu minimum connection
-        idleTimeoutMillis: 30000, // Close idle connections setelah 30 detik
-        connectionTimeoutMillis: 10000, // Timeout koneksi 10 detik
+        min: 0,
+        idleTimeoutMillis: 30000,
 
-        // Query timeout
-        statement_timeout: 30000, // Query timeout 30 detik
-        query_timeout: 30000,
+        // REDUKSI TIMEOUT AGAR LEBIH RENDAH DARI VERCEL 10 DETIK
+        connectionTimeoutMillis: 9000, // Timeout koneksi 9 detik
+
+        // Query timeout (9 detik, agar tidak mencapai Vercel 10 detik timeout)
+        statement_timeout: 9000,
+        query_timeout: 9000,
 
         // Allow exit on idle
-        allowExitOnIdle: true, // Penting untuk serverless
+        allowExitOnIdle: true,
     });
 
     // Event listeners untuk debugging (opsional, bisa dihapus di production)

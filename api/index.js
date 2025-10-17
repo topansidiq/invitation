@@ -17,12 +17,23 @@ app.use(express.json());
 // Serve static files (kalau perlu)
 app.use(express.static(path.join(__dirname, "../public")));
 
-// Get database pool
-const pool = getPool();
+// =========================================================
+// PERBAIKAN UTAMA: Hapus inisialisasi pool global
+// const pool = getPool(); // <-- INI DIHAPUS
+// =========================================================
+
+// Middleware untuk mendapatkan pool. Dipanggil per request.
+app.use((req, res, next) => {
+    // Pool akan dibuat/diambil dari cache di sini.
+    // Jika Cold Start, koneksi ke DB dimulai di sini.
+    req.pool = getPool();
+    next();
+});
+
 
 // --- ROUTES ---
 
-// Health Check
+// Health Check (Tidak menggunakan DB, sangat cepat)
 app.get("/", (req, res) => {
     res.json({
         status: "OK",
@@ -40,10 +51,10 @@ app.get("/spec", (req, res) => {
     res.sendFile(path.join(__dirname, "../public/api-spec.html"));
 });
 
-// GET All Guests
+// GET All Guests (Menggunakan req.pool)
 app.get('/guests', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM guests ORDER BY id');
+        const result = await req.pool.query('SELECT * FROM guests ORDER BY id');
         const guests = result.rows;
         res.status(200).json({
             status: 'success',
@@ -60,11 +71,11 @@ app.get('/guests', async (req, res) => {
     }
 });
 
-// GET Guest by ID
+// GET Guest by ID (Menggunakan req.pool)
 app.get('/guest/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const result = await pool.query('SELECT * FROM guests WHERE id = $1', [id]);
+        const result = await req.pool.query('SELECT * FROM guests WHERE id = $1', [id]);
         const guest = result.rows[0];
 
         if (!guest) {
@@ -89,7 +100,7 @@ app.get('/guest/:id', async (req, res) => {
     }
 });
 
-// POST New Guest
+// POST New Guest (Menggunakan req.pool)
 app.post('/guest', async (req, res) => {
     const { guest_name, attendance_status } = req.body;
 
@@ -102,7 +113,7 @@ app.post('/guest', async (req, res) => {
 
     try {
         const queryText = 'INSERT INTO guests(guest_name, attendance_status) VALUES($1, $2) RETURNING *';
-        const result = await pool.query(queryText, [
+        const result = await req.pool.query(queryText, [
             guest_name,
             attendance_status || 'not confirmed'
         ]);
@@ -123,7 +134,7 @@ app.post('/guest', async (req, res) => {
     }
 });
 
-// PUT Update Guest
+// PUT Update Guest (Menggunakan req.pool)
 app.put('/guest/:id', async (req, res) => {
     const { id } = req.params;
     const { guest_name, attendance_status } = req.body;
@@ -136,7 +147,7 @@ app.put('/guest/:id', async (req, res) => {
     }
 
     try {
-        const result = await pool.query(
+        const result = await req.pool.query(
             'UPDATE guests SET guest_name = $1, attendance_status = $2 WHERE id = $3 RETURNING *',
             [guest_name, attendance_status, id]
         );
@@ -165,12 +176,12 @@ app.put('/guest/:id', async (req, res) => {
     }
 });
 
-// DELETE Guest
+// DELETE Guest (Menggunakan req.pool)
 app.delete('/guest/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        const result = await pool.query(
+        const result = await req.pool.query(
             'DELETE FROM guests WHERE id = $1 RETURNING id',
             [id]
         );
