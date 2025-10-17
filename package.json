@@ -22,11 +22,11 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev": "vercel dev",
-    "start": "node api/index.js",
-    "migrate": "npx knex --knexfile knexfile.js migrate:latest"
+    "dev": "node api/index.js",
+    "test": "node -e \"import('./api/connection.js').then(m => m.testConnection())\""
   },
   "dependencies": {
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "pg": "^8.16.3",
     "serverless-http": "^4.0.0"
