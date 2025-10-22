@@ -1,37 +1,28 @@
 {
   "name": "invitation",
   "version": "1.0.0",
-  "description": "Aplikasi Undangan Digital",
-  "keywords": [
-    "invitation",
-    "digital",
-    "nodejs",
-    "express",
-    "knex"
-  ],
-  "homepage": "https://github.com/topansidiq/invitation#readme",
-  "bugs": {
-    "url": "https://github.com/topansidiq/invitation/issues"
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "migrate": "knex migrate:latest "
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/topansidiq/invitation.git"
   },
+  "keywords": [],
+  "author": "",
   "license": "ISC",
-  "author": "Topan Sidiq",
-  "type": "module",
-  "main": "index.js",
-  "scripts": {
-    "dev": "node api/index.js",
-    "test": "node -e \"import('./api/connection.js').then(m => m.testConnection())\""
+  "bugs": {
+    "url": "https://github.com/topansidiq/invitation/issues"
   },
+  "homepage": "https://github.com/topansidiq/invitation#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
-    "pg": "^8.16.3",
-    "serverless-http": "^4.0.0"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.10"
+    "knex": "^3.1.0",
+    "pg": "^8.16.3"
   }
 }
