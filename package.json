@@ -4,7 +4,7 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "start": "node api/index.js",
+    "dev": "node api/index.js",
     "migrate": "knex migrate:latest "
   },
   "repository": {
